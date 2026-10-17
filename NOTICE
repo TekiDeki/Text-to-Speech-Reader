@@ -1,0 +1,25 @@
+Text-to-Speech Reader
+Copyright 2026 Kristian Mario Miskovic (TekiDeki)
+https://github.com/TekiDeki/Text-to-Speech-Reader
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------
+Third-party software
+--------------------------------------------------------------------------
+
+None bundled. The application is a single HTML file built from the sources in
+this repository: HTML, CSS, JavaScript and translations. It bundles no TTS
+engine, framework, analytics or font files. Text-to-speech is provided by the
+browser's Web Speech API and its available system or browser voice services.
+
+--------------------------------------------------------------------------
+External services and privacy
+--------------------------------------------------------------------------
+
+The application has no application backend, telemetry or analytics. Text and
+settings are saved locally by the application. A local voice processes text
+on the device. A remote or online voice may send text to its speech provider
+for synthesis; consult that provider's privacy policy before reading
+sensitive material. The application labels voices as local, online or unknown
+when the browser exposes that information.

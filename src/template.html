@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101c33">
+<meta name="description" content="Transformă texte în audiobook-uri și ascultă-le cu vocile disponibile în browser.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Text-to-Speech Reader</title>
+<style>/*CSS*/</style>
+<script>try{if(localStorage.getItem('td-audiobook-theme')==='dark')document.documentElement.classList.add('theme-dark');}catch(_){}</script>
+</head>
+<body>
+<div class="page-shell">
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Text-to-Speech Reader">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M7 9.5c5.1-2 10.2-1.5 13 1.2v22c-2.8-2.7-7.9-3.2-13-1.2zM33 9.5c-5.1-2-10.2-1.5-13 1.2v22c2.8-2.7 7.9-3.2 13-1.2z"/><path d="M20 11v22"/></svg></span>
+      <span data-i18n="appName">Text-to-Speech Reader</span>
+    </a>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Dark mode" title="Dark mode">
+        <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.3A8.7 8.7 0 0 1 8.7 3.8 8.8 8.8 0 1 0 20.2 15.3Z"/></svg>
+        <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+        <span id="themeLabel">Dark mode</span>
+      </button>
+      <label class="locale-control"><span data-i18n="language">Limba interfeței</span>
+        <select id="localeSelect" aria-label="Interface language">
+          <option value="ro">Română</option><option value="en">English</option><option value="sr-latn">Srpski (latinica)</option><option value="sr-cyrl">Srpski (ćirilica)</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="eyebrow">STUDIO PERSONAL DE ASCULTARE</span></div>
+        <h1 data-i18n="title">Textul tău, transformat în ascultare.</h1>
+        <p data-i18n="subtitle">Lipește un text sau încarcă un fișier .txt. Redă-l cu vocile disponibile în browser; vocile Online pot trimite textul furnizorului pentru sinteză.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="art-disc"><span></span></div><div class="sound-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel source-panel">
+        <div class="panel-heading"><div><span class="step">01</span><h2 data-i18n="sourceTitle">1. Adaugă textul</h2></div><span class="panel-symbol" aria-hidden="true">Aa</span></div>
+        <p class="panel-hint" data-i18n="sourceHint">Lipește textul aici sau încarcă un fișier .txt</p>
+        <textarea id="textInput" spellcheck="false" data-i18n-placeholder="placeholder" placeholder="Lipește textul cărții aici..."></textarea>
+        <div class="text-meta"><span id="charCount">0 caractere</span><span class="meta-divider"></span><span id="timeEstimate">0 min timp estimat</span></div>
+        <div class="source-actions">
+          <label class="button button-primary upload-button" for="fileInput"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m0 0L6.5 6.5M10 3l3.5 3.5M4 12v4h12v-4"/></svg><span data-i18n="upload">Încarcă fișier .txt</span></label>
+          <input id="fileInput" type="file" accept=".txt,text/plain" hidden>
+          <button id="sampleButton" class="button button-secondary" type="button" data-i18n="sample">Încarcă text demonstrativ</button>
+          <button id="clearButton" class="button button-quiet" type="button" data-i18n="clear">Șterge textul</button>
+          <button id="undoButton" class="button button-quiet undo-button" type="button" data-i18n="undo" disabled>Anulează</button>
+        </div>
+      </section>
+
+      <aside class="side-column">
+        <section class="panel chapter-panel">
+          <div class="panel-heading"><div><span class="step">02</span><h2 data-i18n="chaptersTitle">2. Capitole</h2></div><span class="chapter-count" id="chapterCount">0</span></div>
+          <p class="panel-hint" data-i18n="chapterHint">Titlurile care încep cu # devin capitole. Dacă nu există titluri, textul este împărțit în secțiuni.</p>
+          <div id="chapterList" class="chapter-list" aria-label="Chapters"></div>
+        </section>
+        <section class="panel voice-panel">
+          <div class="panel-heading"><div><span class="step">03</span><h2 data-i18n="voiceTitle">3. Voce și ritm</h2></div><span class="voice-icon" aria-hidden="true">♫</span></div>
+          <label class="field-label" for="voiceSelect" data-i18n="voice">Voce disponibilă</label>
+          <select id="voiceSelect" class="full-select"><option value="" data-i18n="voiceLoading">Se caută vocile disponibile...</option></select>
+          <p class="edge-voice-note" data-i18n="edgeVoiceNote">Pentru o selecție mai bogată, încearcă Microsoft Edge pe desktop. Vocile depind de browser și sistem; cele Online sau Natural necesită internet și pot trimite textul furnizorului pentru sinteză. Alege o voce locală pentru procesare pe dispozitiv.</p>
+          <div class="rate-row"><label class="field-label" for="rateInput" data-i18n="rate">Viteză</label><output id="rateValue" for="rateInput">1.0×</output></div>
+          <input id="rateInput" class="rate-slider" type="range" min="0.6" max="1.8" step="0.1" value="1" aria-label="Speech speed">
+          <div class="range-labels"><span data-i18n="rateSlow">Mai lent</span><span data-i18n="rateFast">Mai rapid</span></div>
+        </section>
+      </aside>
+
+      <section class="player-card">
+        <div class="player-main">
+          <div class="player-cover" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M11 10c6-2 11-1 13 2v27c-2-3-7-4-13-2zM37 10c-6-2-11-1-13 2v27c2-3 7-4 13-2z"/><path d="M24 12v27"/></svg></div>
+          <div class="player-copy"><div class="player-kicker" data-i18n="playerTitle">Ascultă</div><div id="playerStatus" class="player-status" aria-live="polite" data-i18n="idle">Pregătit pentru ascultare</div><div id="activeChapter" class="active-chapter">Text-to-Speech Reader</div></div>
+          <div class="player-controls">
+            <button id="prevButton" class="icon-button" type="button" data-i18n-aria="previous" aria-label="Capitolul anterior"><svg viewBox="0 0 24 24"><path d="M6 5v14M19 6l-9 6 9 6z"/></svg></button>
+            <button id="playButton" class="play-button" type="button" data-i18n-aria="play" aria-label="Redă capitolul"><svg class="play-icon" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7z"/></svg><svg class="pause-icon" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM15 5h4v14h-4z"/></svg></button>
+            <button id="nextButton" class="icon-button" type="button" data-i18n-aria="next" aria-label="Capitolul următor"><svg viewBox="0 0 24 24"><path d="M18 5v14M5 6l9 6-9 6z"/></svg></button>
+          </div>
+          <button id="stopButton" class="stop-button" type="button" data-i18n="stop">Oprește</button>
+        </div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+        <div class="player-foot"><span id="progressLabel">-</span><span>WEB SPEECH</span></div>
+      </section>
+    </div>
+
+    <footer class="footnotes"><p><span class="privacy-icon">◈</span><span data-i18n="privacy">Aplicația salvează textul și setările doar pe dispozitiv. Vocile locale procesează textul pe dispozitiv; vocile Online îl pot trimite furnizorului pentru sinteză. Verifică politica furnizorului pentru detalii.</span></p><p class="export-note" data-i18n="exportNote">Exportul audio nu este inclus: funcția vocală standard a browserului redă textul, dar nu furnizează un fișier descărcabil.</p></footer>
+  </main>
+</div>
+<script>/*JS*/</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol !== 'file:') { window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); }); }
+</script>
+</body>
+</html>

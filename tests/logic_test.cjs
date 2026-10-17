@@ -1,0 +1,27 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const cp = require('node:child_process');
+const root = path.resolve(__dirname, '..');
+
+cp.execFileSync('python3', ['build.py'], { cwd: root, stdio: 'inherit' });
+const sourceLocales = JSON.parse(fs.readFileSync(path.join(root, 'src/i18n/locales.json'), 'utf8'));
+assert.deepEqual(Object.keys(sourceLocales).sort(), ['en', 'ro', 'sr-latn']);
+const appJs = fs.readFileSync(path.join(root, 'src/app.js'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+assert.ok(html.startsWith('<!doctype html>'));
+assert.ok(!html.startsWith('\uFEFF'));
+assert.ok(!/[\u2013\u2014]/.test(html));
+assert.ok(!appJs.toLowerCase().includes('</script'));
+const match = html.match(/window\.TD_LOCALES=(\{[^]*?\});\n\(function/);
+assert.ok(match, 'Embedded locale bundle exists');
+const locales = JSON.parse(match[1]);
+assert.deepEqual(Object.keys(locales).sort(), ['en', 'ro', 'sr-cyrl', 'sr-latn']);
+const localeKeys = Object.keys(locales.en).sort();
+for (const locale of Object.values(locales)) assert.deepEqual(Object.keys(locale).sort(), localeKeys);
+assert.equal(locales['sr-cyrl'].title, 'Твој текст, спреман да се слуша.');
+assert.equal(locales['sr-cyrl'].sampleText.startsWith('# Почетак путовања'), true);
+assert.ok(html.includes('SpeechSynthesisUtterance'));
+assert.ok(html.includes('id="undoButton"'));
+assert.ok(html.includes('id="fileInput"'));
+console.log('Logic and build tests passed.');
