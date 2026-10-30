@@ -51,6 +51,10 @@ html.theme-dark .edge-voice-note{color:#a3afbf}
   /* panourile si cardurile se largestesc la cat incape */
   .panel, .card, .sheet, .action, .action-main, .action-side, .source-panel, .panel-heading { min-width: 0; max-width: 100%; }
   .chips, #cityChips { flex-wrap: wrap; }
+  /* grila paginii: 1fr singur isi ia latimea minima de la cel mai lat copil (cardul playerului,
+     338px), deci coloana trebuie fortata la minmax(0, 1fr) si copiii la min-width 0. */
+  .workspace, .side-column { grid-template-columns: minmax(0, 1fr); }
+  .workspace > *, .side-column > * { min-width: 0; max-width: 100%; }
 }
 </style>
 </head>
