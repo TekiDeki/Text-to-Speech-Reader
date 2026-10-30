@@ -26,6 +26,16 @@ html.theme-dark .panel,html.theme-dark .player-card{background:#121e30;border-co
 @media(max-width:540px){.topbar-actions{gap:7px}.theme-toggle{width:36px;min-height:36px;padding:0}.theme-toggle span{display:none}.theme-toggle svg{width:17px;height:17px}.locale-control select{max-width:90px}}
 .edge-voice-note{font-size:9px;line-height:1.5;color:#8b96a5;margin:9px 1px 0}
 html.theme-dark .edge-voice-note{color:#a3afbf}
+
+
+
+  /* regula casei: tinte de atingere pe mobil */
+  @media (pointer: coarse), (max-width: 700px) {
+    .brand { min-height: 34px; display: inline-flex; align-items: center; }
+    #localeSelect { min-height: 34px; }
+    #rateInput { min-height: 34px; display: inline-flex; align-items: center; }
+    #stopButton { min-height: 34px; display: inline-flex; align-items: center; }
+  }
 </style>
 <script>try{if(localStorage.getItem('td-audiobook-theme')==='dark')document.documentElement.classList.add('theme-dark');}catch(_){}</script>
 </head>
